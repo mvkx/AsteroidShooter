@@ -1,4 +1,4 @@
-import { Shape } from './shape.js';
+import { Shape } from './Shape.js';
 import { randomInt } from './math.js'
 import { ObjectCollider } from './ObjectCollider.js'
 

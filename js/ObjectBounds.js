@@ -4,11 +4,23 @@ export class ObjectBounds {
     constructor(pos, r){
         this.pos = pos;
         this.r = r;
+        this.proximity = false;
     }
 
     overlaps(other){
-        let d = dist(this.pos.x, this.pos.y, other.pos.x, other.pos.y);
-        // console.log(`distance: ${d}, threshold: ${this.r / 2 + other.r / 2}, overlap: ${d < this.r + other.r}`);
-        return d < (this.r + other.r);
+        const d = dist(this.pos.x, this.pos.y, other.pos.x, other.pos.y);
+        if (d < (this.r + other.r)){
+            this.proximity = true;
+            return true;
+        }
+        return false;
+    }
+
+    draw(context){
+        context.beginPath();
+        context.strokeStyle = this.proximity ? 'orangered' : 'orange';
+        context.lineWidth = 1;
+        context.arc(this.pos.x, this.pos.y, this.r, 0, Math.PI * 2);
+        context.stroke();
     }
 }

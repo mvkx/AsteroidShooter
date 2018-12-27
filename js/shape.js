@@ -8,22 +8,23 @@ export class Shape {
         this.vel = new Vec2(0, 0);
         this.mass = randomInt(1, 5);
         this.momentum = new Vec2(Math.random() * 0.5, Math.random() * 0.5);
-        this.r = r || randomInt(75, 125);
-        this.a = a || toRadians(randomInt(360));
+        this.r = randomInt(75, 125);
+        this.a = toRadians(randomInt(360));
         this.rspeed = Math.random() * 0.3 * (1 / this.r); 
         this.sides = {};
-        this.bounds = new ObjectBounds(this.pos, this.r * 1.5);
+        this.bounds = new ObjectBounds(this.pos, this.r * 1.05);
         
         this.createShape();
         this.applyForce(this.momentum);
     }
 
     createShape(){
-        const count = randomInt(5, 15);
-        for(let i = 0; i < count; i++) {
+        const vertexCount = randomInt(3, 7);
+        for (let i = 0; i < vertexCount; i++) {
             this.sides[i] = new Object;
-            this.sides[i].r = randomInt(this.r * 0.5, this.r * 1.5);
-            this.sides[i].a = (Math.PI * 2 / count) * i + this.a;  // TODO: divide into unequal parts
+            this.sides[i].r = this.r;
+            let angleOffset = randomInt(-5, 5) * 0.01 * Math.PI * 2;
+            this.sides[i].a = (Math.PI * 2 / vertexCount) * i + this.a + angleOffset;
         }
     }
 
@@ -42,8 +43,9 @@ export class Shape {
         context.strokeStyle = 'rgba(255, 255, 255, 1)';
         context.fillStyle = 'white';
         
-        context.fillRect(this.pos.x,this.pos.y,2,2);
+        // context.fillRect(this.pos.x,this.pos.y,2,2);
 
+        // Draw shape
         context.beginPath();
         let tempx = this.sides[0].r * Math.cos(this.sides[0].a + this.a);
         let tempy = this.sides[0].r * Math.sin(this.sides[0].a + this.a);
@@ -58,15 +60,8 @@ export class Shape {
         context.closePath();
         context.lineWidth = 2; 
         context.stroke();
-        // context.fill();
-        context.moveTo(this.pos.x, this.pos.y);
-        context.lineTo(this.pos.x + this.r * Math.cos(this.a), this.pos.y + this.r * Math.sin(this.a));
-        context.stroke();
-        context.beginPath();
-        context.strokeStyle = 'yellow';
-        context.lineWidth = 1;
-        context.arc(this.bounds.pos.x, this.bounds.pos.y, this.bounds.r, 0, Math.PI * 2);
-        context.stroke();
+        // Draw collider bounds
+        this.bounds.draw(context);
     }
 
     collides(other) {
